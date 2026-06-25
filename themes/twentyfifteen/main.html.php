@@ -40,12 +40,12 @@
     <?php endif; ?>
     <?php if (!empty($p->audio)):?>
     <div class="post-thumbnail">
-        <iframe width="100%" height="200px" class="embed-responsive-item" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=<?php echo $p->audio;?>&amp;auto_play=false&amp;visual=true"></iframe>
+        <?php echo generate_audio_player($p->audio); ?>
     </div>
     <?php endif; ?>
     <?php if (!empty($p->video)):?>
     <div class="post-thumbnail">
-        <iframe width="100%" height="315px" class="embed-responsive-item" src="https://www.youtube.com/embed/<?php echo get_video_id($p->video); ?>" frameborder="0" allowfullscreen></iframe>
+        <?php echo generate_video_player($p->video); ?>
     </div>
     <?php endif; ?>
     <?php if (!empty($p->quote)):?>

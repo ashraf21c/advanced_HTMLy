@@ -199,12 +199,34 @@ License: GPL v2 or later
 	content:"\f606";
 }
 
-.social-logo-threads:before {
-	content:"\f10d";
+.social-logo-whatsapp:before {
+	content:"\f608";
 }
 
-.social-logo-tiktok-alt:before {
-	content:"\f107";
+.social-logo-vero:before {
+	content:"";
+	background-image: url('../s_icons/VERO_Icon_Regular_Green.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+}
+
+.social-logo-upskrolled:before {
+	content:"";
+	background-image: url('../s_icons/UpScrolled_icon.svg');
+	background-size: contain;
+	background-repeat: no-repeat;
+	background-position: center;
+	width: 24px;
+	height: 24px;
+	display: inline-block;
+}
+
+.social-logo-threads:before {
+	content:"\f10d";
 }
 
 .social-logo-tiktok:before {
@@ -233,10 +255,6 @@ License: GPL v2 or later
 
 .social-logo-vimeo:before {
 	content:"\f212";
-}
-
-.social-logo-whatsapp:before {
-	content:"\f608";
 }
 
 .social-logo-woocommerce:before {

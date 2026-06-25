@@ -54,10 +54,10 @@
                         <blockquote><?php echo $p->quote;?></blockquote>
                     <?php endif;?>
                     <?php if (!empty($p->video)):?>
-                        <span class="embed-youtube"><iframe width="100%" height="315px" class="embed-responsive-item" src="https://www.youtube.com/embed/<?php echo get_video_id($p->video); ?>" frameborder="0" allowfullscreen></iframe></span>
+                        <?php echo generate_video_player($p->video); ?>
                     <?php endif; ?>
                     <?php if (!empty($p->audio)):?>
-                        <span class="embed-soundcloud"><iframe width="100%" height="200px" class="embed-responsive-item" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=<?php echo $p->audio;?>&amp;auto_play=false&amp;visual=true"></iframe></span>
+                        <span class="embed-soundcloud"><?php echo generate_audio_player($p->audio); ?></span>
                     <?php endif; ?>
                     <?php echo get_teaser($p->body, $p->url);?>
                     <?php if ($teaserType === 'trimmed'):?>[...] <a class="more-link" href="<?php echo $p->url; ?>"><?php echo $readMore; ?></a><?php endif;?>

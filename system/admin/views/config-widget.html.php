@@ -158,12 +158,6 @@
             Facebook
           </label>
         </div>
-        <div class="form-check">
-          <input class="form-check-input" type="radio" name="-config-comment.system" id="comment.system3" value="local" <?php if (config('comment.system') === 'local'):?>checked<?php endif;?>>
-          <label class="form-check-label" for="comment.system3">
-             Local
-          </label>
-        </div>
       </div>
     </div>
   </div>
@@ -234,6 +228,30 @@
     <label for="social.instagram" class="col-sm-2 col-form-label">Instagram</label>
     <div class="col-sm-10">
       <input type="text" name="-config-social.instagram" class="form-control" id="social.instagram" value="<?php echo config('social.instagram');?>" placeholder="https://www.instagram.com/username">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="social.telegram" class="col-sm-2 col-form-label">Telegram</label>
+    <div class="col-sm-10">
+      <input type="text" name="-config-social.telegram" class="form-control" id="social.telegram" value="<?php echo config('social.telegram');?>" placeholder="https://t.me/username">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="social.whatsapp" class="col-sm-2 col-form-label">WhatsApp</label>
+    <div class="col-sm-10">
+      <input type="text" name="-config-social.whatsapp" class="form-control" id="social.whatsapp" value="<?php echo config('social.whatsapp');?>" placeholder="https://wa.me/1234567890">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="social.vero" class="col-sm-2 col-form-label">Vero</label>
+    <div class="col-sm-10">
+      <input type="text" name="-config-social.vero" class="form-control" id="social.vero" value="<?php echo config('social.vero');?>" placeholder="https://www.vero.co/username">
+    </div>
+  </div>
+  <div class="form-group row">
+    <label for="social.upskrolled" class="col-sm-2 col-form-label">Upskrolled</label>
+    <div class="col-sm-10">
+      <input type="text" name="-config-social.upskrolled" class="form-control" id="social.upskrolled" value="<?php echo config('social.upskrolled');?>" placeholder="https://upskrolled.com/username">
     </div>
   </div>
   <div class="form-group row">

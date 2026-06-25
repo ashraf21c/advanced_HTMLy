@@ -21,7 +21,7 @@ if ($type == 'is_page') {
 <script src="<?php echo site_url() ?>system/resources/js/jquery-ui.min.js"></script>
 <script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/Markdown.Converter.js"></script>
 <script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/Markdown.Sanitizer.js"></script>
-<script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/Markdown.Editor.js"></script>
+<script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/Markdown.Editor.js?v=8"></script>
 <script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/Markdown.Extra.js"></script>
 <link rel="stylesheet" href="<?php echo site_url() ?>system/resources/css/jquery-ui.css">
 
@@ -174,7 +174,13 @@ if ($type == 'is_page') {
     var saveInterval = 60000;
     const field = [<?php foreach ($fields as $f){ echo '"' . $f->name . '", ';}?>];
 </script>
-<script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/editor.js"></script>
+<script type="text/javascript">
+    window.ADMIN_LANG = '<?php echo config('language') ?>';
+    window.EDITOR_BASE = '<?php echo site_url() ?>system/admin/editor/js/';
+    window.HTMLY_MARKDOWN_AUTO_INIT = false;
+</script>
+<script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/editor.js?v=8"></script>
+<script type="text/javascript" src="<?php echo site_url() ?>system/admin/editor/js/locale-loader.js"></script>
 <script>
 function loadImages(page) {
   $.ajax({

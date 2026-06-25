@@ -14,13 +14,11 @@
                 <?php } ?>
                 <?php if (!empty($p->video)) { ?>
                     <div class="featured featured-video embed-responsive embed-responsive-16by9">
-                        <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/<?php echo get_video_id($p->video); ?>" frameborder="0" allowfullscreen></iframe>
+                        <?php echo generate_video_player($p->video); ?>
                     </div>
                 <?php } ?>
                 <?php if (!empty($p->audio)) { ?>
-                    <div class="featured featured-audio embed-responsive embed-responsive-16by9">
-                        <iframe class="embed-responsive-item" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=<?php echo $p->audio;?>&amp;auto_play=false&amp;visual=true"></iframe>
-                    </div>
+                    <?php echo generate_audio_player($p->audio); ?>
                 <?php } ?>
                 <?php if (!empty($p->quote)) { ?>
                     <div class="featured featured-quote">

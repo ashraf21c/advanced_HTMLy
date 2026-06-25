@@ -34,7 +34,7 @@
             <img alt="<?php echo $post->title;?>" src="<?php echo $post->image;?>"/>
         <?php endif;?>
         <?php if(!empty($post->video)):?>
-            <iframe width="100%" height="315px" class="embed-responsive-item" src="https://www.youtube.com/embed/<?php echo get_video_id($post->video); ?>" frameborder="0" allowfullscreen></iframe>
+            <?php echo generate_video_player($post->video); ?>
         <?php endif;?>
         <?php if(!empty($post->audio)):?>
             <iframe width="100%" height="200px" class="embed-responsive-item" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=<?php echo $post->audio;?>&amp;auto_play=false&amp;visual=true"></iframe>

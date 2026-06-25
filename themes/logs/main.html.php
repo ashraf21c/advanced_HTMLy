@@ -37,12 +37,12 @@
             <?php } ?>
             <?php if (!empty($p->video)) { ?>
                 <div class="featured-video">
-                    <iframe src="https://www.youtube.com/embed/<?php echo get_video_id($p->video); ?>" width="560" height="315" frameborder="0" allowfullscreen></iframe>
+                    <?php echo generate_video_player($p->video); ?>
                 </div>
             <?php } ?>
             <?php if (!empty($p->audio)) { ?>
                 <div class="featured-audio">
-                    <iframe width="560" height="315" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=<?php echo $p->audio;?>&amp;auto_play=false&amp;visual=true"></iframe>
+                    <?php echo generate_audio_player($p->audio); ?>
                 </div>
             <?php } ?>
             <?php if (!empty($p->quote)) { ?>

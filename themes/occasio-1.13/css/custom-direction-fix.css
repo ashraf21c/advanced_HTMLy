@@ -1,0 +1,40 @@
+/* Custom CSS overrides for Occasio theme */
+/* Fix text direction for blog titles and content */
+
+html,
+body {
+    direction: auto !important;
+    unicode-bidi: embed !important;
+}
+
+/* Ensure blog titles and post content use automatic direction detection */
+.entry-title,
+.post-title,
+.page-title,
+.site-title,
+h1, h2, h3, h4, h5, h6 {
+    direction: auto !important;
+    unicode-bidi: embed !important;
+}
+
+/* Override any RTL-specific styling that might affect titles */
+.entry-title,
+.post-title,
+.page-title {
+    text-align: start !important; /* Uses start instead of left for better RTL support */
+}
+
+/* Ensure Japanese and other LTR content displays correctly */
+:lang(ja),
+:lang(en),
+:lang(fr),
+:lang(de),
+:lang(es) {
+    direction: ltr !important;
+}
+
+/* Arabic and Hebrew should remain RTL */
+:lang(ar),
+:lang(he) {
+    direction: rtl !important;
+}

@@ -1,0 +1,46 @@
+/* barlow-regular - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 400;
+  src: url('../fonts/barlow/barlow-v13-latin-regular.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* barlow-italic - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Barlow';
+  font-style: italic;
+  font-weight: 400;
+  src: url('../fonts/barlow/barlow-v13-latin-italic.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* barlow-700 - latin */
+@font-face {
+  font-display: swap; /* Check https://developer.mozilla.org/en-US/docs/Web/CSS/@font-face/font-display for other options. */
+  font-family: 'Barlow';
+  font-style: normal;
+  font-weight: 700;
+  src: url('../fonts/barlow/barlow-v13-latin-700.woff2') format('woff2'); /* Chrome 36+, Opera 23+, Firefox 39+, Safari 12+, iOS 10+ */
+}
+
+/* RTL: Barlow is a Latin typeface. Keep using it for UI where appropriate,
+   but provide common RTL font fallbacks when the document direction is RTL.
+   This ensures proper rendering for Arabic/Hebrew content if no dedicated
+   Arabic/RTL webfont is loaded. */
+html[dir="rtl"],
+body[dir="rtl"] {
+  font-family: 'Barlow', "Noto Sans Arabic", "Segoe UI", "Tahoma", system-ui, -apple-system, "Arial", sans-serif;
+}
+
+/* Load an Arabic-capable webfont for consistent Arabic rendering in RTL contexts.
+   Uses Google Fonts as a fallback CDN. If you prefer to self-host, replace with
+   a local @font-face declaration for an Arabic-capable file (e.g. Noto Sans Arabic).
+*/
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;700&display=swap');
+
+/* Prefer the Arabic-capable family when dir=rtl */
+html[dir="rtl"], body[dir="rtl"] {
+  font-family: 'Noto Sans Arabic', 'Barlow', "Segoe UI", "Tahoma", system-ui, -apple-system, "Arial", sans-serif;
+}

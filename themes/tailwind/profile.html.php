@@ -76,7 +76,7 @@
                             <img src="<?php echo $p->image;?>" width="100%" alt="<?php echo $p->title;?>">
                             <?php } elseif (!empty($p->video)) {?>
                             <div class="relative" style="padding-top: 56.25%">
-                            <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/<?php echo get_video_id($p->video); ?>" frameborder="0" allowfullscreen></iframe>
+                            <?php echo generate_video_player($p->video, '100%', '100%', 'class="absolute inset-0 w-full h-full"'); ?>
                             </div>
                             <?php } elseif (!empty($p->audio)) {?>
                             <iframe width="100%" height="100%" class="embed-responsive-item" scrolling="no" frameborder="no" src="https://w.soundcloud.com/player/?url=<?php echo $p->audio;?>&amp;auto_play=false&amp;visual=true"></iframe>

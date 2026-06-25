@@ -1,24 +1,5 @@
 ﻿// needs Markdown.Converter.js at the moment
 
-/*
- * Key features added:
- * - RTL (Right-to-Left) button with Ctrl+Shift+R shortcut
- * - LTR (Left-to-Right) button with Ctrl+Shift+L shortcut  
- * - Toggle behavior - clicking again removes direction formatting
- * - Default Arabic/English text insertion when no text selected
- * - HTML wrapping with <div dir="rtl"> and <div dir="ltr"> tags
- * - Proper toolbar integration with Font Awesome icons, including stronger solid icon support for math buttons
- *
- * Key fixes made:
- * 1. Fixed missing comma in defaultsStrings object after "help" property
- * 2. Fixed indentation throughout the code for consistency
- * 3. Moved RTL/LTR command methods to correct location in CommandManager prototype
- * 4. Fixed keyboard shortcuts for RTL/LTR - added proper Ctrl+Shift+R and Ctrl+Shift+L handling
- * 5. Fixed button placement - RTL/LTR buttons properly placed in toolbar
- * 6. Fixed syntax errors and ensured all brackets/braces properly closed
- * 7. ADDED: Preview Link button with eye icon
- */
-
 (function () {
 
     var util = {},
@@ -42,16 +23,13 @@
 
         italic: "Emphasis <em> Ctrl+I",
         italicexample: "emphasized text",
-        
+		
         strikethrough: "Strikethrough <s> Ctrl+X",
         strikethroughexample: "strikethrough text",
 
         link: "Hyperlink <a> Ctrl+L",
         linkdescription: "enter link description here",
         linkdialog: "<p><b>Insert Hyperlink</b></p><p>https://example.com/ \"optional title\"</p>",
-
-        // === STEP 1: ADD PREVIEW LINK STRING ===
-        previewlink: "Link with Preview",
 
         quote: "Blockquote <blockquote> Ctrl+Q",
         quoteexample: "Blockquote",
@@ -71,11 +49,11 @@
         headingexample: "Heading",
 
         hr: "Horizontal Rule <hr> Ctrl+R",
-        
+		
         readmore: "Read More <!--more--> Ctrl+M",
-        
+		
         toc: "TOC <!--toc-->",
-        
+		
         table: "Table - Ctrl+J",
 
         maximize: "Maximize CTRL+P",
@@ -85,46 +63,7 @@
         redo: "Redo - Ctrl+Y",
         redomac: "Redo - Ctrl+Shift+Z",
 
-        help: "Markdown Editing Help",
-        
-        rtl: "Right-to-Left Ctrl+Shift+R",
-        ltr: "Left-to-Right Ctrl+Shift+L",
-        rtlexample: "نص من اليمين إلى اليسار",
-        ltrexample: "Left to right text",
-
-        math: "Math Formula LaTeX Ctrl+Shift+M",
-        mathexample: "E = mc^2",
-
-        superscript: "Superscript",
-        superscriptexample: "x^2",
-
-        subscript: "Subscript",
-        subscriptexample: "H_2O",
-
-        specialchars: "Special Characters",
-        mathsymbols: "Arithmetic & Algebra",
-        arrows: "Arrows",
-        
-        equation: "Equation",
-        calculus: "Calculus Integral",
-        calculussymbols: "Calculus",
-        statistics: "Statistics",
-        linearalgebra: "Linear Algebra & Matrices",
-        settheory: "Set Theory & Logic",
-        relations: "Relations & Similarity",
-        geometry: "Geometry",
-        statisticsprob: "Statistics & Probability",
-        aiml: "AI & Machine Learning",
-        miscellaneous: "Miscellaneous Symbols",
-        arduino: "Arduino Programming",
-        
-        japanesegeneral: "Japanese General Symbols",
-        kanbun: "Kanbun",
-        radical: "Radical (sanzui)",
-        
-        islamicsymbols: "Islamic Symbols",
-        aligncenter: "Align Center",
-        alignright: "Align Right"
+        help: "Markdown Editing Help"
     };
 
 
@@ -144,17 +83,17 @@
     // from:https://github.com/jserz/js_piece/blob/master/DOM/ChildNode/remove()/remove().md
     (function (arr) {
         arr.forEach(function (item) {
-            if (item.hasOwnProperty('remove')) {
-                return;
+        if (item.hasOwnProperty('remove')) {
+            return;
+        }
+        Object.defineProperty(item, 'remove', {
+            configurable: true,
+            enumerable: true,
+            writable: true,
+            value: function remove() {
+            this.parentNode.removeChild(this);
             }
-            Object.defineProperty(item, 'remove', {
-                configurable: true,
-                enumerable: true,
-                writable: true,
-                value: function remove() {
-                    this.parentNode.removeChild(this);
-                }
-            });
+        });
         });
     })([Element.prototype, CharacterData.prototype, DocumentType.prototype]);
     // -------------------------------------------------------------------
@@ -1399,20 +1338,6 @@
                         return;
                 }
 
-                // Check for RTL/LTR shortcuts with Ctrl+Shift
-                if ((key.ctrlKey || key.metaKey) && key.shiftKey && !key.altKey) {
-                    switch (keyCodeStr) {
-                        case "r":
-                            doClick(buttons.rtl);
-                            break;
-                        case "l":
-                            doClick(buttons.ltr);
-                            break;
-                        case "m":
-                            doClick(buttons.math);
-                            break;
-                    }
-                }
 
                 if (key.preventDefault) {
                     key.preventDefault();
@@ -1543,13 +1468,19 @@
         }
 
         function makeSpritedButtonRow() {
+
             var buttonBar = panels.buttonBar;
+
+            var normalYShift = "note-btn btn btn-light btn-sm";
+            var disabledYShift = "note-btn btn btn-light btn-sm disabled";
+            var highlightYShift = "";
+
             var buttonRow = document.createElement("ul");
             buttonRow.style.padding = "0px 10px";
             buttonRow.id = "wmd-button-row" + postfix;
             buttonRow.className = 'wmd-button-row';
             buttonRow = buttonBar.appendChild(buttonRow);
-
+            var xPosition = 0;
             var makeButton = function (id, title, XClass, textOp) {
                 var button = document.createElement("li");
                 button.className = "wmd-button";
@@ -1567,7 +1498,6 @@
                 buttonRow.appendChild(button);
                 return button;
             };
-            
             var makeSpacer = function (num) {
                 var spacer = document.createElement("li");
                 spacer.className = "wmd-spacer wmd-spacer" + num;
@@ -1575,78 +1505,32 @@
                 buttonRow.appendChild(spacer);
             }
 
-            // Create buttons in order
             buttons.bold = makeButton("wmd-bold-button", getString("bold"), "fa fa-bold", bindCommand("doBold"));
             buttons.italic = makeButton("wmd-italic-button", getString("italic"), "fa fa-italic", bindCommand("doItalic"));
             buttons.heading = makeButton("wmd-heading-button", getString("heading"), "fa fa-header", bindCommand("doHeading"));
             buttons.strikethrough = makeButton("wmd-strikethrough-button", getString("strikethrough"), "fa fa-strikethrough", bindCommand("doStrikethrough"));
-            
-            makeSpacer(1);
-            
-            buttons.rtl = makeButton("wmd-rtl-button", getString("rtl"), "fa-solid fa-arrow-left", bindCommand("doRTL"));
-            buttons.ltr = makeButton("wmd-ltr-button", getString("ltr"), "fa-solid fa-arrow-right", bindCommand("doLTR"));
-            buttons.alignleft = makeButton("wmd-alignleft-button", getString("alignleft"), "fa-solid fa-align-left", bindCommand("doAlignLeft"));
-            buttons.aligncenter = makeButton("wmd-aligncenter-button", getString("aligncenter"), "fa-solid fa-align-center", bindCommand("doAlignCenter"));
-            buttons.alignright = makeButton("wmd-alignright-button", getString("alignright"), "fa-solid fa-align-right", bindCommand("doAlignRight"));
-            buttons.specialchars = makeButton("wmd-specialchars-button", getString("specialchars"), "fa-solid fa-star", bindCommand("doSpecialChars"));
-            buttons.islamicsymbols = makeButton("wmd-islamicsymbols-button", getString("islamicsymbols"), "fa-solid fa-moon", bindCommand("doIslamicSymbols"));
+            //makeSpacer(1);
             buttons.olist = makeButton("wmd-olist-button", getString("olist"), "fa fa-list-ol", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, true);
             }));
             buttons.ulist = makeButton("wmd-ulist-button", getString("ulist"), "fa fa-list-ul", bindCommand(function (chunk, postProcessing) {
                 this.doList(chunk, postProcessing, false);
             }));
-            
-            makeSpacer(2);
-            
             buttons.quote = makeButton("wmd-quote-button", getString("quote"), "fa fa-quote-right", bindCommand("doBlockquote"));
             buttons.code = makeButton("wmd-code-button", getString("code"), "fa fa-code", bindCommand("doCode"));
             buttons.table = makeButton("wmd-table-button", getString("table"), "fa fa-table", bindCommand("doTable"));
-            
-            makeSpacer(3);
-            
-            // Link buttons group
+            //makeSpacer(2);
             buttons.link = makeButton("wmd-link-button", getString("link"), "fa fa-link", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, false);
             }));
-
-            // === PREVIEW LINK BUTTON - SIMPLIFIED VERSION ===
-            buttons.previewLink = makeButton("wmd-preview-link-button", getString("previewlink"), "fa fa-eye", bindCommand(function (chunk, postProcessing) {
-                return this.doPreviewLink(chunk, postProcessing);
-            }));
-
             buttons.image = makeButton("wmd-image-button", getString("image"), "fa fa-image", bindCommand(function (chunk, postProcessing) {
                 return this.doLinkOrImage(chunk, postProcessing, true);
             }));
-            
             buttons.hr = makeButton("wmd-hr-button", getString("hr"), "fa fa-ellipsis-h", bindCommand("doHorizontalRule"));
             buttons.readmore = makeButton("wmd-readmore-button", getString("readmore"), "fa fa-arrow-right", bindCommand("doReadMore"));
             buttons.toc = makeButton("wmd-toc-button", getString("toc"), "fa fa-list-alt", bindCommand("doTOC"));
 
-            buttons.math = makeButton("wmd-math-button", getString("math"), "fa-solid fa-calculator", bindCommand("doMath"));
-            buttons.superscript = makeButton("wmd-superscript-button", getString("superscript"), "fa-solid fa-superscript", bindCommand("doSuperscript"));
-            buttons.subscript = makeButton("wmd-subscript-button", getString("subscript"), "fa-solid fa-subscript", bindCommand("doSubscript"));
-            buttons.mathsymbols = makeButton("wmd-mathsymbols-button", getString("mathsymbols"), "fa-solid fa-square-root-alt", bindCommand("doMathSymbols"));
-            buttons.arrows = makeButton("wmd-arrows-button", getString("arrows"), "fa-solid fa-arrows-alt", bindCommand("doArrows"));
-            buttons.equation = makeButton("wmd-equation-button", getString("equation"), "fa-solid fa-equals", bindCommand("doEquation"));
-            buttons.calculus = makeButton("wmd-calculus-button", getString("calculus"), "fa-solid fa-integral", bindCommand("doCalculus"));
-            buttons.calculussymbols = makeButton("wmd-calculus-symbols-button", getString("calculussymbols"), "fa-solid fa-sigma", bindCommand("doCalculusSymbols"));
-            buttons.statistics = makeButton("wmd-statistics-button", getString("statistics"), "fa-solid fa-chart-bar", bindCommand("doStatistics"));
-            buttons.linearalgebra = makeButton("wmd-linearalgebra-button", getString("linearalgebra"), "fa-solid fa-square", bindCommand("doLinearAlgebra"));
-            buttons.settheory = makeButton("wmd-settheory-button", getString("settheory"), "fa-solid fa-circle-nodes", bindCommand("doSetTheory"));
-            buttons.relations = makeButton("wmd-relations-button", getString("relations"), "fa-solid fa-code-branch", bindCommand("doRelations"));
-            buttons.geometry = makeButton("wmd-geometry-button", getString("geometry"), "fa-solid fa-triangle", bindCommand("doGeometry"));
-            buttons.statisticsprob = makeButton("wmd-statisticsprob-button", getString("statisticsprob"), "fa-solid fa-chart-line", bindCommand("doStatisticsProb"));
-            buttons.aiml = makeButton("wmd-aiml-button", getString("aiml"), "fa-solid fa-brain", bindCommand("doAIML"));
-            buttons.miscellaneous = makeButton("wmd-miscellaneous-button", getString("miscellaneous"), "fa-solid fa-ellipsis", bindCommand("doMiscellaneous"));
-            buttons.arduino = makeButton("wmd-arduino-button", getString("arduino"), "fa-solid fa-microchip", bindCommand("doArduino"));
-            buttons.japanesegeneral = makeButton("wmd-japanesegeneral-button", getString("japanesegeneral"), "custom-japanesegeneral-icon fa-solid fa-torii-gate", bindCommand("doJapaneseGeneral"));
-            buttons.kanbun = makeButton("wmd-kanbun-button", getString("kanbun"), "custom-kanbun-icon", bindCommand("doKanbun"));
-            buttons.radical = makeButton("wmd-radical-button", getString("radical"), "custom-radical-icon", bindCommand("doRadical"));
-
-            makeSpacer(4);
-            
-            // Undo/Redo buttons
+            //makeSpacer(3);
             buttons.undo = makeButton("wmd-undo-button", getString("undo"), "fa-solid fa-rotate-left", null);
             buttons.undo.execute = function (manager) {
                 if (manager) manager.undo();
@@ -1654,13 +1538,13 @@
 
             var redoTitle = /win/.test(nav.platform.toLowerCase()) ?
                 getString("redo") :
-                getString("redomac");
+                getString("redomac"); // mac and other non-Windows platforms
 
             buttons.redo = makeButton("wmd-redo-button", redoTitle, "fa-solid fa-rotate-right", null);
             buttons.redo.execute = function (manager) {
                 if (manager) manager.redo();
             };
-            
+			
             buttons.maximize = makeButton("wmd-maximize-button", getString("maximize"), "fa-solid fa-maximize", toggleFullscreen);
             buttons.minimize = makeButton("wmd-minimize-button", getString("minimize"), "fa-solid fa-minimize", toggleFullscreen);
             buttons.minimize.hidden = true;
@@ -1668,11 +1552,10 @@
             if (helpOptions) {
                 var helpButton = document.createElement("li");
                 var helpButtonImage = document.createElement("span");
-                helpButtonImage.className = "note-btn btn btn-light btn-sm";
-                helpButtonImage.innerHTML = '<i class="fa fa-question-circle"></i>';
                 helpButton.appendChild(helpButtonImage);
                 helpButton.className = "wmd-button wmd-help-button";
                 helpButton.id = "wmd-help-button" + postfix;
+                helpButton.XClass = "note-btn btn btn-light btn-sm";
                 helpButton.isHelp = true;
                 helpButton.style.right = "0px";
                 helpButton.title = getString("help");
@@ -1793,403 +1676,6 @@
             chunk.after = markup + chunk.after;
         }
 
-        return;
-    };
-
-    commandProto.doRTL = function (chunk, postProcessing) {
-        return this.doTextDirection(chunk, postProcessing, "rtl");
-    };
-
-    commandProto.doLTR = function (chunk, postProcessing) {
-        return this.doTextDirection(chunk, postProcessing, "ltr");
-    };
-
-    commandProto.doTextDirection = function (chunk, postProcessing, direction) {
-        chunk.trimWhitespace();
-    
-        // If there's no selection, insert example text
-        if (!chunk.selection) {
-            if (direction === "rtl") {
-                chunk.selection = this.getString("rtlexample");
-            } else {
-                chunk.selection = this.getString("ltrexample");
-            }
-        }
-        
-        // Wrap the selection with the appropriate HTML tag
-        var tag = direction === "rtl" ? '<div dir="rtl">' : '<div dir="ltr">';
-        var endTag = '</div>';
-        
-        // Check if the text is already wrapped with direction tags
-        var rtlRegex = /^<div dir="rtl">([\s\S]*?)<\/div>$/;
-        var ltrRegex = /^<div dir="ltr">([\s\S]*?)<\/div>$/;
-        
-        if (direction === "rtl" && rtlRegex.test(chunk.selection)) {
-            // Remove RTL wrapper if it's already there (toggle behavior)
-            chunk.selection = chunk.selection.replace(rtlRegex, '$1');
-        } else if (direction === "ltr" && ltrRegex.test(chunk.selection)) {
-            // Remove LTR wrapper if it's already there (toggle behavior)
-            chunk.selection = chunk.selection.replace(ltrRegex, '$1');
-        } else {
-            // Apply the appropriate wrapper
-            chunk.selection = tag + chunk.selection + endTag;
-        }
-        
-        return;
-    };
-
-    commandProto.doMath = function (chunk, postProcessing) {
-        return this.doLaTeX(chunk, postProcessing);
-    };
-
-    commandProto.doSuperscript = function (chunk, postProcessing) {
-        return this.doSuperSub(chunk, postProcessing, "sup");
-    };
-
-    commandProto.doSubscript = function (chunk, postProcessing) {
-        return this.doSuperSub(chunk, postProcessing, "sub");
-    };
-
-    commandProto.doSpecialChars = function (chunk, postProcessing) {
-        // Insert common special characters
-        if (!chunk.selection) {
-            chunk.selection = "© ® ™ € £ ¥ °C °F ∑ ∏ ⋮ ⋱ ℵ ℏ ℓ ℜ ℑ ↦ ℒ   K kg m s A mol cd Ω Hz N J W Pa V C F T Wb H lm lx Bq Gy Sv kat";
-        }
-        return;
-    };
-
-       commandProto.doArrows = function (chunk, postProcessing) {
-           // Insert arrow symbols
-           if (!chunk.selection) {
-               chunk.selection = "→←↑↓↔↕ ⇄↗↘↙↖↓↑→←↔⇆";
-           }
-           return;
-       };
-    commandProto.doMathSymbols = function (chunk, postProcessing) {
-        // Insert common math symbols
-        if (!chunk.selection) {
-            chunk.selection = "± × ÷ % ! √ ∛ ∜ ≈ ≠ ≤ ≥ ∝ ∞ nPr nCr Ran#";
-        }
-        return;
-    };
-
-    commandProto.doIslamicSymbols = function (chunk, postProcessing) {
-        // Insert common Islamic/Arabic symbols
-        if (!chunk.selection) {
-            chunk.selection = "☪️ هلال 🌙 الله ﷲ";
-        }
-        return;
-    };
-
-    commandProto.doEquation = function (chunk, postProcessing) {
-        // Insert equation template
-        if (!chunk.selection) {
-            chunk.selection = "ax^2 + bx + c = 0";
-        }
-        chunk.trimWhitespace();
-        // Wrap in $$ for display math
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doCalculus = function (chunk, postProcessing) {
-        // Insert a smaller default calculus LaTeX template
-        if (!chunk.selection) {
-            chunk.selection = "$$\\int f(x) \\, dx$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doCalculusSymbols = function (chunk, postProcessing) {
-        // Insert calculus-related LaTeX symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\int, \\iint, \\iiint, \\oint, \\oiint, \\oiiint, \\mathrm{d}x, \\frac{d}{dx}, \\frac{d^2}{dx^2}, f'(x), f''(x), f^{(n)}(x), \\partial, \\lim_{x \\to a}, \\nabla, \\nabla\\theta, \\nabla^2, \\Delta, H, J, \\delta(x)$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doStatistics = function (chunk, postProcessing) {
-        // Insert statistics symbols and templates
-        if (!chunk.selection) {
-            chunk.selection = "$$\\mu, \\sigma, \\bar{x}, \\mathrm{P}(A)$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doLinearAlgebra = function (chunk, postProcessing) {
-        // Insert linear algebra and matrix symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\oplus, \\otimes, \\odot, \\cdot, \\top, \\dagger, A^{-1}, A^+, \\|x\\|, \\|A\\|, \\|A\\|_F, \\|A\\|_1, \\|A\\|_\\infty, \\lambda, v, \\det, \\mathrm{tr}, \\mathrm{rank}(A), \\mathrm{null}(A), \\mathrm{span}(S), \\dim(V), [\\,], (\\,), \\{\\,\\}, \\langle\\,\\rangle, \\lfloor\\,\\rfloor, \\lceil\\,\\rceil, I$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doSetTheory = function (chunk, postProcessing) {
-        // Insert set theory and logic symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\forall, \\exists, \\nexists, \\land, \\lor, \\neg, \\oplus, \\to, \\leftrightarrow, \\in, \\notin, \\subset, \\subseteq, \\not\\subset, \\supseteq, \\supset, \\not\\supseteq, \\not\\supset, \\cap, \\cup, \\emptyset, \\therefore, \\because$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doRelations = function (chunk, postProcessing) {
-        // Insert relation and similarity symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\sim, \\simeq, \\cong, \\equiv, \\doteq, \\doteqdot, \\eqcirc, \\prec, \\succ, \\ll, \\gg, \\lll, \\ggg$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doGeometry = function (chunk, postProcessing) {
-        // Insert geometry symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\angle, \\measuredangle, ^\\circ, ', '', \\mathrm{rad}, \\mathrm{grad}, \\pi, \\perp, \\parallel, \\nparallel, \\triangle, \\square, \\diamond, \\star, \\blacksquare$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doStatisticsProb = function (chunk, postProcessing) {
-        // Insert statistics and probability symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\mu, \\bar{x}, \\sigma, \\sigma^2, \\hat{p}, P(A), \\mathbb{E}, \\mathbb{V}, \\mathrm{Cov}, \\mathrm{Corr}, \\sim, \\approx, N(\\mu,\\sigma^2), \\mathrm{Bernoulli}(p), \\mathrm{Binomial}(n,p), \\mathrm{Poisson}(\\lambda), \\mathrm{Uniform}(a,b), \\mathrm{Exp}(\\lambda), \\Phi(x), \\phi(x), \\mathrm{erf}(x), \\mathrm{erfc}(x), \\Gamma(z), \\mathrm{B}(a,b), \\chi^2, t, F, p\\text{-value}, \\alpha, \\beta, H_0, H_1, \\text{MLE}, \\text{MAP}$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doAIML = function (chunk, postProcessing) {
-        // Insert AI and machine learning symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\theta, \\Theta, w, b, x, y, \\hat{y}, t, J(\\theta), L(\\theta), \\mathcal{L}(\\theta), E(w), \\text{MSE}, \\text{MAE}, \\text{RMSE}, R^2, \\text{CE}, \\text{KL}, \\sigma(z), \\text{ReLU}(x), \\text{LeakyReLU}(x), \\text{ELU}(x), \\text{GELU}(x), \\text{Swish}(x), \\text{Softmax}(z), \\text{Softplus}(x), \\alpha, \\beta, \\gamma, \\delta, \\epsilon, \\eta, \\lambda, \\kappa, \\rho, \\tau, \\phi, \\omega, \\nabla_\\theta, \\nabla_x, \\nabla_w, \\frac{\\partial L}{\\partial \\theta}, \\frac{\\partial L}{\\partial w}, \\text{SGD}, \\text{Adam}, \\text{RMSprop}, \\text{Adagrad}, \\text{momentum}, \\epsilon, \\text{batch\\_size}, \\text{epoch}, \\text{iteration}, \\text{SVM}, \\text{PCA}, \\text{SVD}, \\text{NN}, \\text{CNN}, \\text{RNN}, \\text{LSTM}, \\text{GRU}, \\text{GNN}, \\text{GAN}, \\text{VAE}, \\text{Transformer}, \\text{Attention}(Q,K,V), \\text{head}_i, \\text{MultiHead}(Q,K,V), \\text{LayerNorm}(x), \\text{BatchNorm}(x), \\text{Dropout}(p), \\text{precision}, \\text{recall}, F_1, \\text{ROC}, \\text{AUC}, \\text{TP}, \\text{TN}, \\text{FP}, \\text{FN}, \\text{entropy}, I(X;Y), D_{\\text{KL}}(P||Q), \\text{overfitting}, \\text{underfitting}, \\text{bias}, \\text{variance}$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doMiscellaneous = function (chunk, postProcessing) {
-        // Insert miscellaneous symbols
-        if (!chunk.selection) {
-            chunk.selection = "$$\\sum, \\prod, \\vdots, \\ddots, \\aleph, \\hbar, \\ell, \\Re, \\Im, \\mapsto, \\mathcal{L}, ^\\circ C, ^\\circ F, K, \\mathrm{kg}, \\mathrm{m}, \\mathrm{s}, \\mathrm{A}, \\mathrm{mol}, \\mathrm{cd}, \\Omega, \\mathrm{Hz}, \\mathrm{N}, \\mathrm{J}, \\mathrm{W}, \\mathrm{Pa}, \\mathrm{V}, \\mathrm{C}, \\mathrm{F}, \\mathrm{T}, \\mathrm{Wb}, \\mathrm{H}, \\mathrm{lm}, \\mathrm{lx}, \\mathrm{Bq}, \\mathrm{Gy}, \\mathrm{Sv}, \\mathrm{kat}$$";
-        }
-        chunk.trimWhitespace();
-        var startTag = '$$';
-        var endTag = '$$';
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/ ;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else if (!chunk.selection.match(/^\$\$/)) {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        return;
-    };
-
-    commandProto.doArduino = function (chunk, postProcessing) {
-        // Insert Arduino programming symbols and keywords
-        if (!chunk.selection) {
-            chunk.selection = "int float char byte boolean String void unsigned long word true false HIGH LOW INPUT OUTPUT INPUT_PULLUP LED_BUILTIN PI setup() loop() pinMode() digitalWrite() digitalRead() analogRead() analogWrite() delay() delayMicroseconds() millis() micros() map() constrain() random() Serial Serial.begin() Serial.print() Serial.println() Serial.read() if else for while break continue return == != && || ! ++ -- += I2C SPI LED GND VCC PWM ADC GPIO";
-        }
-        chunk.trimWhitespace();
-        chunk.selection = chunk.selection;
-        return;
-    };
-
-    commandProto.doJapaneseGeneral = function (chunk, postProcessing) {
-        // Insert Japanese general symbols
-        if (!chunk.selection) {
-            chunk.selection = "※〒〶〠㉁㉀㈷㊙㊚㊛㊪㍿㊏㊐㊊㊋㊌㊍㊎㊫㊠㊟㊞㉆㉄㊔";
-        }
-        return;
-    };
-
-    commandProto.doKanbun = function (chunk, postProcessing) {
-        // Insert Kanbun symbols
-        if (!chunk.selection) {
-            chunk.selection = "㆐㆑";
-        }
-        return;
-    };
-
-    commandProto.doRadical = function (chunk, postProcessing) {
-        // Insert radical (部首) symbols
-        if (!chunk.selection) {
-            chunk.selection = "一丨丶丿乙亅二亠人儿入八冂冖冫几凵刀力勹匕匚匸十卜卩厂厶又口土士夂夊夕大女子宀寸小尢尸屮山川工己巾干幺广廴廾弋弓彐彡彳心戈戶手支攴文斗斤方无日曰月木欠止歹殳毋比毛氏气水火爪父爻爿片牙牛犬玉瓜瓦甘生用田疋疒癶白皮皿目矛矢石示禸禾穴立竹米糸缶网羊羽老而耒耳聿肉臣自至臼舌舛舟艮色艸虍虫血行衣襾見角言谷豆豕豉貝赤走足身車辛辰辵邑酉釆里金長門阜隶隹雨靑非面革韋韭音頁風飛食首香馬骨高髟鬥鬯鬲鬼魚鳥鹵鹿麥麻黃黍黑黹黽鼎鼓鼠鼻齊齒龍龜龠";
-        }
-        return;
-    };
-
-    commandProto.doAlignLeft = function (chunk, postProcessing) {
-        chunk.trimWhitespace();
-        if (!chunk.selection) {
-            chunk.selection = "Left aligned text";
-        }
-        var alignRegex = /^<div style="text-align:\s*(left|center|right);?">(([\s\S]*?))<\/div>$/;
-        if (alignRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(alignRegex, '$2');
-        } else {
-            chunk.selection = '<div style="text-align: left;">' + chunk.selection + '</div>';
-        }
-        return;
-    };
-
-    commandProto.doAlignCenter = function (chunk, postProcessing) {
-        chunk.trimWhitespace();
-        if (!chunk.selection) {
-            chunk.selection = "Center aligned text";
-        }
-        var alignRegex = /^<div style="text-align:\s*(left|center|right);?">(([\s\S]*?))<\/div>$/;
-        if (alignRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(alignRegex, '$2');
-        }
-        chunk.selection = '<div style="text-align: center;">' + chunk.selection + '</div>';
-        return;
-    };
-
-    commandProto.doAlignRight = function (chunk, postProcessing) {
-        chunk.trimWhitespace();
-        if (!chunk.selection) {
-            chunk.selection = "Right aligned text";
-        }
-        var alignRegex = /^<div style="text-align:\s*(left|center|right);?">(([\s\S]*?))<\/div>$/;
-        if (alignRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(alignRegex, '$2');
-        } else {
-            chunk.selection = '<div style="text-align: right;">' + chunk.selection + '</div>';
-        }
-        return;
-    };
-
-    commandProto.doLaTeX = function (chunk, postProcessing) {
-        chunk.trimWhitespace();
-        
-        // If no selection, insert example
-        if (!chunk.selection) {
-            chunk.selection = this.getString("mathexample");
-        }
-        
-        // Wrap in $$ for display math
-        var startTag = '$$';
-        var endTag = '$$';
-        
-        // Check if already wrapped
-        var latexRegex = /^\$\$([\s\S]*?)\$\$$/;
-        if (latexRegex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(latexRegex, '$1');
-        } else {
-            chunk.selection = startTag + chunk.selection + endTag;
-        }
-        
-        return;
-    };
-
-    commandProto.doSuperSub = function (chunk, postProcessing, type) {
-        chunk.trimWhitespace();
-        
-        // If no selection, insert example
-        if (!chunk.selection) {
-            if (type === "sup") {
-                chunk.selection = this.getString("superscriptexample");
-            } else {
-                chunk.selection = this.getString("subscriptexample");
-            }
-        }
-        
-        var tag = type === "sup" ? '<sup>' : '<sub>';
-        var endTag = type === "sup" ? '</sup>' : '</sub>';
-        
-        // Check if already wrapped
-        var regex = type === "sup" ? /^<sup>([\s\S]*?)<\/sup>$/ : /^<sub>([\s\S]*?)<\/sub>$/;
-        if (regex.test(chunk.selection)) {
-            chunk.selection = chunk.selection.replace(regex, '$1');
-        } else {
-            chunk.selection = tag + chunk.selection + endTag;
-        }
-        
         return;
     };
 
@@ -3024,31 +2510,6 @@
 		chunk.selection = table.slice(selectionOffset, pipePos);
 		chunk.after = table.slice(pipePos) + chunk.after;
 	  }
-    };
-
-    // === ADD PREVIEW LINK METHOD - SIMPLIFIED ===
-    commandProto.doPreviewLink = function (chunk, postProcessing) {
-        chunk.trimWhitespace();
-        
-        var background;
-        var that = this;
-        
-        var linkEnteredCallback = function (link) {
-            if (background) {
-                background.remove();
-            }
-
-            if (link !== null) {
-                var linkText = chunk.selection || "Visit " + (new URL(link)).hostname;
-                var previewHtml = '<a href="' + link + '" class="preview-link">\n    ' + linkText + '\n</a>';
-                chunk.selection = previewHtml;
-            }
-            postProcessing();
-        };
-
-        background = ui.createBackground();
-        ui.prompt("<p><b>Insert Link with Preview</b></p><p>Enter the URL for the preview link:</p>", "https://", linkEnteredCallback);
-        return true;
     };
 
     // better fullscreen editing on mobile by letting the browser resize viewport when keyboard is open

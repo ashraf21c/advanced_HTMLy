@@ -38,6 +38,40 @@
         redo: "Refaire - Ctrl+Y",
         redomac: "Refaire - Ctrl+Shift+Z",
 
-        help: "Aide sur Markdown"
+        help: "Aide sur Markdown",
+
+        math: "Formule mathématique LaTeX Ctrl+Shift+M",
+        mathexample: "E = mc^2",
+
+        superscript: "Exposant",
+        superscriptexample: "x^2",
+
+        subscript: "Indice",
+        subscriptexample: "H_2O",
+
+        specialchars: "Caractères spéciaux",
+        mathsymbols: "Arithmétique et Algèbre",
+        arrows: "Flèches",
+        
+        equation: "Équation",
+        calculus: "Intégrale de Calcul",
+        calculussymbols: "Calcul",
+        statistics: "Statistiques",
+        linearalgebra: "Algèbre linéaire et Matrices",
+        settheory: "Théorie des ensembles et Logique",
+        relations: "Relations et Similarité",
+        geometry: "Géométrie",
+        statisticsprob: "Statistiques et Probabilités",
+        aiml: "IA et Apprentissage automatique",
+        miscellaneous: "Symboles Divers",
+        arduino: "Programmation Arduino",
+        
+        japanesegeneral: "Symboles généraux japonais",
+        kanbun: "Kanbun",
+        radical: "Radical",
+        
+        alignleft: "Aligner à gauche",
+        aligncenter: "Centrer",
+        alignright: "Aligner à droite"
     };
 })();

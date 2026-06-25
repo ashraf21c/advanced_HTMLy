@@ -78,10 +78,19 @@ blockquote {
     float: left;
 }
 
+/* Fix button spacing and layout */
 .wmd-button > span {
     background-repeat: no-repeat;
     background-position: 0px 0px;
-    display: inline-block;
+    display: inline-block !important;
+    visibility: visible !important;
+    /* Fallback padding/size so buttons are visible even if Bootstrap or
+       icon fonts aren't loaded. Keeps toolbar usable in minimal setups. */
+    padding: 6px 8px;
+    min-width: 30px;
+    min-height: 30px;
+    box-sizing: border-box;
+    text-align: center;
 }
 
 .dark-mode .wmd-button > span.btn-light {
@@ -265,4 +274,294 @@ pre code {
     border: unset;
     border-radius: unset;
     box-shadow: unset;
+}
+/* RTL/LTR support in preview */
+.wmd-preview [dir="rtl"] {
+    direction: rtl;
+    text-align: right;
+}
+
+.wmd-preview [dir="ltr"] {
+    direction: ltr;
+    text-align: left;
+}
+
+/* RTL content specific styles */
+.wmd-preview [dir="rtl"] blockquote {
+    border-left: none;
+    border-right: 2px dotted #888;
+    padding-left: 0;
+    padding-right: 5px;
+}
+
+.wmd-preview [dir="rtl"] table {
+    direction: rtl;
+}
+
+.wmd-preview [dir="rtl"] th,
+.wmd-preview [dir="rtl"] td {
+    text-align: right;
+}
+
+/* Optional enhancement for RTL lists */
+.wmd-preview [dir="rtl"] ul,
+.wmd-preview [dir="rtl"] ol {
+    padding-right: 20px;
+    padding-left: 0;
+}
+
+/* Preview link styling */
+.preview-link {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+}
+
+.preview-link:hover {
+    background-color: #0056b3;
+    color: white;
+    text-decoration: none;
+}
+
+/* Dark mode support for preview links */
+.dark-mode .preview-link {
+    background-color: #0d6efd;
+}
+
+.dark-mode .preview-link:hover {
+    background-color: #0b5ed7;
+}
+
+/* === PREVIEW LINK BUTTON FIXES === */
+
+/* Ensure the preview link button is visible and properly styled */
+#wmd-preview-link-button {
+    display: list-item !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Style for the eye icon in preview link button */
+#wmd-preview-link-button .fa-eye {
+    font-family: 'Font Awesome 6 Free' !important;
+    font-weight: 900 !important;
+}
+
+/* Ensure proper button row layout */
+.wmd-button-row {
+    display: flex !important;
+    flex-wrap: wrap !important;
+    align-items: center !important;
+    position: relative;
+    margin: 0px;
+    padding: 0px;
+}
+
+/* Ensure individual buttons are properly displayed */
+.wmd-button {
+    list-style: none;
+    cursor: pointer;
+    float: left;
+    display: list-item !important;
+}
+
+/* Ensure the eye icon is properly loaded */
+.fa-eye:before {
+    content: "\f06e" !important;
+}
+
+/* Make sure the button toolbar shows all buttons */
+.wmd-button-bar {
+    min-height: 48px; /* Ensure enough height for all buttons */
+}
+
+/* Fix for potential hidden buttons */
+.wmd-button-row li {
+    display: list-item !important;
+    float: left !important;
+}
+
+/* Defensive editor overrides: protect toolbar visibility and Font Awesome glyphs */
+/* Added 2025-11-19 */
+#wmd-button-bar,
+.wmd-button-bar,
+.wmd-button-row,
+.wmd-button,
+.wmd-button > span {
+    display: inline-block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+/* Force icon font-family for toolbar icons to the admin Font Awesome fonts */
+.wmd-button .fa,
+.wmd-button .fas,
+.wmd-button .far,
+.wmd-button .fab,
+.wmd-button .svg-inline--fa,
+.wmd-button .fa::before,
+.wmd-button .fas::before,
+.wmd-button .far::before,
+.wmd-button .fab::before {
+    font-family: "Font Awesome 6 Free", "Font Awesome 6 Brands", "FontAwesome", sans-serif !important;
+    font-weight: 900 !important;
+    speak: none !important;
+    font-style: normal !important;
+    line-height: 1 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    text-rendering: auto !important;
+    -webkit-font-smoothing: antialiased !important;
+    -moz-osx-font-smoothing: grayscale !important;
+}
+.wmd-button .fa,
+.wmd-button .fas,
+.wmd-button .far,
+.wmd-button .fab {
+    font-size: 1rem !important;
+}
+
+/* Ensure pseudo-element content isn't blanked by external CSS; provide common fallbacks */
+.wmd-button .fa-eye::before { content: "\f06e" !important; }
+.wmd-button .fa-bold::before { content: "\f032" !important; }
+.wmd-button .fa-italic::before { content: "\f033" !important; }
+.wmd-button .fa-link::before { content: "\f0c1" !important; }
+.wmd-button .fa-image::before { content: "\f03e" !important; }
+.wmd-button .fa-calculator::before { content: "\f1ec" !important; }
+.wmd-button .fa-superscript::before { content: "\f12b" !important; }
+.wmd-button .fa-subscript::before { content: "\f12c" !important; }
+.wmd-button .fa-star::before { content: "\f005" !important; }
+.wmd-button .fa-moon::before { content: "\f186" !important; }
+.wmd-button .fa-square-root-alt::before { content: "\f698" !important; }
+.wmd-button .fa-equals::before { content: "\f52c" !important; }
+.wmd-button .fa-integral::before { content: "\f667" !important; }
+.wmd-button .fa-sigma::before { content: "\f68b" !important; }
+.wmd-button .fa-triangle::before { content: "\25B2" !important; } /* fallback: ▲ */
+.wmd-button .fa-chart-bar::before { content: "\f080" !important; }
+.wmd-button .fa-align-left::before { content: "\f036" !important; }
+.wmd-button .fa-align-center::before { content: "\f037" !important; }
+.wmd-button .fa-align-right::before { content: "\f038" !important; }
+.wmd-button .fa-arrow-left::before { content: "\f060" !important; }
+.wmd-button .fa-arrow-right::before { content: "\f061" !important; }
+
+/* ===== CUSTOM KANBUN ICON STYLE ===== */
+/* Display the Japanese character 漢 (Kanbun) as a custom icon */
+.custom-kanbun-icon {
+    display: inline-block !important;
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", "Noto Sans CJK", sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    color: currentColor !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+    width: 1em !important;
+    height: 1em !important;
+}
+
+.custom-kanbun-icon::before {
+    content: "漢" !important;
+    display: inline-block !important;
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", "Noto Sans CJK", sans-serif !important;
+    font-weight: bold !important;
+}
+
+/* Ensure custom icon displays properly in button bar */
+.wmd-button .custom-kanbun-icon {
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", "Noto Sans CJK", sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+}
+
+.wmd-button .custom-kanbun-icon::before {
+    content: "漢" !important;
+    display: inline-block !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+}
+
+/* Dark mode support for custom icon */
+.dark-mode .custom-kanbun-icon::before {
+    content: "漢" !important;
+    color: inherit;
+}
+
+/* ===== CUSTOM JAPANESE GENERAL ICON STYLE ===== */
+.custom-japanesegeneral-icon {
+    display: inline-block !important;
+    position: relative !important;
+    width: 1em !important;
+    height: 1em !important;
+    min-width: 1em !important;
+    min-height: 1em !important;
+    vertical-align: middle !important;
+    line-height: 1 !important;
+    background-image: url("../../resources/images/torii-gate-solid-full.svg") !important;
+    background-size: contain !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    background-color: transparent !important;
+}
+
+.custom-japanesegeneral-icon::after {
+    content: "" !important;
+    position: absolute !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    background-image: url("../../resources/images/emojiterra-jp-GoogleNotoColorEmoji17_0.svg") !important;
+    background-size: contain !important;
+    background-position: center center !important;
+    background-repeat: no-repeat !important;
+    pointer-events: none !important;
+}
+
+.wmd-button .fa-torii-gate::before { content: "\f6a1" !important; }
+
+/* ===== CUSTOM RADICAL ICON STYLE ===== */
+/* Display the Japanese character 氵 (sanzui) as a custom icon */
+.custom-radical-icon {
+    display: inline-block !important;
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", "Noto Sans CJK", sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    color: currentColor !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+    width: 1em !important;
+    height: 1em !important;
+}
+
+.custom-radical-icon::before {
+    content: "氵" !important;
+    display: inline-block !important;
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", "Noto Sans CJK", sans-serif !important;
+    font-weight: bold !important;
+}
+
+/* Ensure custom radical icon displays properly in button bar */
+.wmd-button .custom-radical-icon {
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", "Noto Sans CJK", sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+    display: inline-block !important;
+}
+
+.wmd-button .custom-radical-icon::before {
+    content: "氵" !important;
+    display: inline-block !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+}
+
+.dark-mode .custom-radical-icon::before {
+    content: "氵" !important;
+    color: inherit;
 }

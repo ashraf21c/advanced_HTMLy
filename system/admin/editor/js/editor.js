@@ -1,7 +1,15 @@
 (function () {
+  // Expose an initialization function so we can load locale files first.
+  window.__htmly_init_markdown_editor = function() {
     var converter = new Markdown.Converter();
     Markdown.Extra.init(converter);
-    var editor = new Markdown.Editor(converter);
+
+    // Try to use a loaded locale if available. Preference order: Arabic (`ar`), English (`en`), Japanese (`ja`), French (`fr`).
+    var localeStrings = undefined;
+    if (typeof Markdown !== 'undefined' && Markdown.local) {
+      localeStrings = Markdown.local.ar || Markdown.local.en || Markdown.local.ja || Markdown.local.fr;
+    }
+    var editor = (localeStrings) ? new Markdown.Editor(converter, null, { strings: localeStrings }) : new Markdown.Editor(converter);
 
     // Run once on DOM ready
     $('#insertImageDialog').on('hidden.bs.modal', function () {
@@ -76,7 +84,7 @@
         return true; // tell the editor that we'll take care of getting the image url
     });
     //=====end image uploader=====
-    editor.run();
+      editor.run();
 
     //=====drag and drop uploading=====
     function initDropZone(dropZoneId, fileInputId) {
@@ -124,4 +132,10 @@
     initDropZone('dropZoneIIDF', 'insertImageDialogFile');  // Content image
     //=====end drag and drop uploading=====
 
+  };
+
+  // Auto-initialize unless explicitly disabled by setting `window.HTMLY_MARKDOWN_AUTO_INIT = false` before loading this file.
+  if (window.HTMLY_MARKDOWN_AUTO_INIT !== false) {
+    window.__htmly_init_markdown_editor();
+  }
 })();

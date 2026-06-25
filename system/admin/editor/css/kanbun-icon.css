@@ -1,0 +1,41 @@
+/* Custom Kanbun Icon Style */
+.custom-kanbun-icon {
+    display: inline-block !important;
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", sans-serif !important;
+    font-size: 1.2em !important;
+    font-weight: bold !important;
+    color: currentColor !important;
+    line-height: 1 !important;
+    vertical-align: middle !important;
+    text-align: center !important;
+}
+
+.custom-kanbun-icon::before {
+    content: "漢" !important;
+    display: inline-block !important;
+    width: 1em !important;
+    height: 1em !important;
+    font-size: 1em !important;
+}
+
+/* Ensure the custom icon works in the button bar */
+.wmd-button .custom-kanbun-icon {
+    font-family: Arial, "Hiragino Sans", "Microsoft JhengHei", sans-serif !important;
+    font-size: 1rem !important;
+    font-weight: bold !important;
+}
+
+.wmd-button .custom-kanbun-icon::before {
+    content: "漢" !important;
+    display: inline-block !important;
+}
+
+/* Dark mode support */
+.dark-mode .custom-kanbun-icon {
+    color: inherit;
+}
+
+.dark-mode .wmd-button .custom-kanbun-icon::before {
+    content: "漢" !important;
+    color: inherit;
+}

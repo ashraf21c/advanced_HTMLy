@@ -1,0 +1,8 @@
+{
+  "name": "Wiki (Occasio-based)",
+  "version": "1.0",
+  "author": "Adapted from ThemeZee / Occasio",
+  "homepage": "https://themezee.com",
+  "description": "A lightweight wiki/documentation theme based on Occasio. References Occasio assets by default.",
+  "notes": "This theme references Occasio assets under /themes/occasio-1.13. To fully decouple, copy the Occasio css/js/fonts into this theme folder."
+}
